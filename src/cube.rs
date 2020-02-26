@@ -323,10 +323,10 @@ mod tests {
     fn get_face_array() {
         let c = Cube::new();
 
-        let cf: [&Box<dyn Cubie>; 9] =
-            get_face_array!(c, [0, 1, 2, 3, 4, 5, 6, 7, 8]);
+        let cf: CubeFace =
+            initialize_cube_face!(c, [0, 1, 2, 3, 4, 5, 6, 7, 8]);
 
-        assert_eq!(cf.len(), 9);
+        assert_eq!(cf.elements.len(), 9);
         let cubie: &Box<dyn Cubie> = &c.elements[0];
         let cornercubie: &CornerCubie =
             match cubie.as_any().downcast_ref::<CornerCubie>() {
@@ -334,7 +334,7 @@ mod tests {
             None => panic!("cubie isn't a CornerCubie!!"),
         };
 
-        let cubie2: &Box<dyn Cubie> = cf[0];
+        let cubie2: &Box<dyn Cubie> = cf.elements[0];
         let cornercubie2: &CornerCubie =
             match cubie2.as_any().downcast_ref::<CornerCubie>() {
             Some(i) => i,
