@@ -36,6 +36,25 @@ impl CubieFace {
     }
 }
 
+/// A cubie is an individual "subcube" of a twisty cube puzzle. A cubie can have
+/// from one to three colored faces depending on if it is a corner cubie (3
+/// colored faces), edge cubie (2 colored faces), or center cubie (1 colored
+/// face).
+///
+/// In order to allow cubies objects to be coerced to the type representing
+/// their cubie kind, this trait provides a method which all cubie types
+/// implement to cast it as Any.
+///
+/// # Examples
+///
+/// ```
+/// let a: Box<dyn Cubie> = CenterCubie::new();
+/// let b: &CenterCubie =
+///     match a.as_any().downcast_ref::<CenterCubie>() {
+///     Some(b) => b,
+///     None => panic!("&b isn't a CenterCubie!!"),
+/// };
+/// ```
 pub trait Cubie {
     fn as_any(&self) -> &dyn Any;
 }
@@ -174,6 +193,17 @@ macro_rules! get_face_array {
 }
 
 impl Cube {
+    /// Initializes a 3x3 Cube with elements in the form of an array with
+    /// elements in three slices in the following order:
+    ///
+    /// left to right, back to front, and top to bottom
+    ///
+    ///  Top     Middle    Bottom
+    /// 0 1 2    9 10 11  18 19 20
+    /// 3 4 5   12 13 14  21 22 23
+    /// 6 7 8   15 16 17  24 25 26
+    ///
+    /// where 0 would be the top left corner cubie in the back.
     pub fn new() -> Self {
         Self {
             elements: [
