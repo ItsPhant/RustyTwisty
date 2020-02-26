@@ -176,19 +176,21 @@ pub struct Cube {
 }
 
 #[macro_export]
-macro_rules! get_face_array {
+macro_rules! initialize_cube_face {
     ($o:expr, $x:expr) => {
-        [
-            &$o.elements[$x[0]],
-            &$o.elements[$x[1]],
-            &$o.elements[$x[2]],
-            &$o.elements[$x[3]],
-            &$o.elements[$x[4]],
-            &$o.elements[$x[5]],
-            &$o.elements[$x[6]],
-            &$o.elements[$x[7]],
-            &$o.elements[$x[8]],
-        ]
+        CubeFace {
+            elements: [
+                &$o.elements[$x[0]],
+                &$o.elements[$x[1]],
+                &$o.elements[$x[2]],
+                &$o.elements[$x[3]],
+                &$o.elements[$x[4]],
+                &$o.elements[$x[5]],
+                &$o.elements[$x[6]],
+                &$o.elements[$x[7]],
+                &$o.elements[$x[8]],
+            ]
+        }
     }
 }
 
@@ -231,46 +233,28 @@ impl Cube {
     pub fn get_face(&self, s: CubeFaceKind) -> CubeFace {
         match s {
             CubeFaceKind::Top => {
-                CubeFace {
-                    elements:
-                        get_face_array!(&self,
-                                        [0, 1, 2, 3, 4, 5, 6, 7, 8]),
-                }
+                initialize_cube_face!(&self,
+                                      [0, 1, 2, 3, 4, 5, 6, 7, 8])
             },
             CubeFaceKind::Left => {
-                CubeFace {
-                    elements:
-                        get_face_array!(&self,
-                                        [0, 3, 6, 9, 12, 14, 17, 20, 23]),
-                }
+                initialize_cube_face!(&self,
+                                      [0, 3, 6, 9, 12, 14, 17, 20, 23])
             },
             CubeFaceKind::Right => {
-                CubeFace {
-                    elements:
-                        get_face_array!(&self,
-                                        [2, 5, 8, 11, 13, 16, 19, 22, 25])
-                }
+                initialize_cube_face!(&self,
+                                      [2, 5, 8, 11, 13, 16, 19, 22, 25])
             },
             CubeFaceKind::Front => {
-                CubeFace {
-                    elements:
-                        get_face_array!(&self,
-                                        [6, 7, 8, 14, 15, 16, 23, 24, 25]),
-                }
+                initialize_cube_face!(&self,
+                                      [6, 7, 8, 14, 15, 16, 23, 24, 25])
             },
             CubeFaceKind::Back => {
-                CubeFace {
-                    elements:
-                        get_face_array!(&self,
-                                        [0, 1, 2, 9, 10, 11, 17, 18, 19]),
-                }
+                initialize_cube_face!(&self,
+                                      [0, 1, 2, 9, 10, 11, 17, 18, 19])
             },
             CubeFaceKind::Bottom => {
-                CubeFace {
-                    elements:
-                        get_face_array!(&self,
-                                        [17, 18, 19, 20, 21, 22, 23, 24, 25]),
-                }
+                initialize_cube_face!(&self,
+                                      [17, 18, 19, 20, 21, 22, 23, 24, 25])
             },
         }
     }
