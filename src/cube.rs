@@ -164,6 +164,14 @@ pub struct CubeFace<'a> {
     pub elements: [&'a Box<dyn Cubie>; 9]
 }
 
+impl<'a> CubeFace<'a> {
+    pub fn new_from_array(arr: [&'a Box<dyn Cubie>; 9]) -> Self {
+        Self {
+            elements: arr
+        }
+    }
+}
+
 pub enum CubeFaceKind {
     Top,
     Left,
@@ -180,19 +188,17 @@ pub struct Cube {
 #[macro_export]
 macro_rules! initialize_cube_face {
     ($o:expr, $x:expr) => {
-        CubeFace {
-            elements: [
-                &$o.elements[$x[0]],
-                &$o.elements[$x[1]],
-                &$o.elements[$x[2]],
-                &$o.elements[$x[3]],
-                &$o.elements[$x[4]],
-                &$o.elements[$x[5]],
-                &$o.elements[$x[6]],
-                &$o.elements[$x[7]],
-                &$o.elements[$x[8]],
-            ]
-        }
+        CubeFace::new_from_array([
+            &$o.elements[$x[0]],
+            &$o.elements[$x[1]],
+            &$o.elements[$x[2]],
+            &$o.elements[$x[3]],
+            &$o.elements[$x[4]],
+            &$o.elements[$x[5]],
+            &$o.elements[$x[6]],
+            &$o.elements[$x[7]],
+            &$o.elements[$x[8]],
+        ])
     }
 }
 
