@@ -174,8 +174,8 @@ macro_rules! get_face_array {
 }
 
 impl Cube {
-    pub fn new() -> Cube {
-        Cube {
+    pub fn new() -> Self {
+        Self {
             elements: [
                 cubie!("corner"), cubie!("edge"),   cubie!("corner"),
                 cubie!("edge"),   cubie!("center"), cubie!("edge"),
