@@ -58,7 +58,7 @@ impl Cubie for CenterCubie {
 }
 
 impl CenterCubie {
-    pub fn new() -> Box<CenterCubie> {
+    pub fn new() -> Box<Self> {
         Box::new(Self {
             faces: vec![CubieFace::new(); 1]
         })
@@ -87,7 +87,7 @@ impl Cubie for CornerCubie {
 }
 
 impl CornerCubie {
-    pub fn new() -> Box<dyn Cubie> {
+    pub fn new() -> Box<Self> {
         Box::new(Self {
             faces: vec![CubieFace::new(); 3]
         })
@@ -116,7 +116,7 @@ impl Cubie for EdgeCubie {
 }
 
 impl EdgeCubie {
-    pub fn new() -> Box<dyn Cubie> {
+    pub fn new() -> Box<Self> {
         Box::new(Self {
             faces: vec![CubieFace::new(); 2]
         })
