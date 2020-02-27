@@ -71,6 +71,17 @@ impl<'a> Column<'a> {
     }
 }
 
+pub enum CornerPosition {
+    TopBackLeft,
+    TopBackRight,
+    TopFrontLeft,
+    TopFrontRight,
+    BottomBackLeft,
+    BottomBackRight,
+    BottomFrontLeft,
+    BottomFrontRight,
+}
+
 pub struct Cube {
     pub elements: [Box<dyn Cubie>; 26],
 }
@@ -134,6 +145,19 @@ impl Cube {
                 cubie!("edge"),
                 cubie!("corner"),
             ],
+        }
+    }
+
+    pub const fn corner(&self, pos: CornerPosition) -> &Box<dyn Cubie> {
+        match pos {
+            CornerPosition::TopBackLeft => &self.elements[0],
+            CornerPosition::TopBackRight => &self.elements[2],
+            CornerPosition::TopFrontLeft => &self.elements[6],
+            CornerPosition::TopFrontRight => &self.elements[8],
+            CornerPosition::BottomBackLeft => &self.elements[17],
+            CornerPosition::BottomBackRight => &self.elements[19],
+            CornerPosition::BottomFrontLeft => &self.elements[23],
+            CornerPosition::BottomFrontRight => &self.elements[25],
         }
     }
 
