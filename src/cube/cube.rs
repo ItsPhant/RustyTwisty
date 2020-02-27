@@ -48,6 +48,26 @@ impl<'a> Row<'a> {
     }
 }
 
+pub struct Column<'a> {
+    pub center: Option<&'a Box<dyn Cubie>>,
+    pub top: &'a Box<dyn Cubie>,
+    pub bottom: &'a Box<dyn Cubie>,
+}
+
+impl<'a> Column<'a> {
+    pub const fn new(
+        top: &'a Box<dyn Cubie>,
+        center: Option<&'a Box<dyn Cubie>>,
+        bottom: &'a Box<dyn Cubie>,
+    ) -> Self {
+        Column {
+            top,
+            center,
+            bottom,
+        }
+    }
+}
+
 pub struct Cube {
     pub elements: [Box<dyn Cubie>; 26],
 }
@@ -173,6 +193,56 @@ impl Cube {
                 left: &self.elements[23],
                 center: Some(&self.elements[24]),
                 right: &self.elements[25],
+            },
+        ]
+    }
+
+    pub const fn columns(&self) -> [Column; 9] {
+        [
+            Column {
+                top: &self.elements[0],
+                center: Some(&self.elements[9]),
+                bottom: &self.elements[18],
+            },
+            Column {
+                top: &self.elements[1],
+                center: Some(&self.elements[10]),
+                bottom: &self.elements[19],
+            },
+            Column {
+                top: &self.elements[2],
+                center: Some(&self.elements[11]),
+                bottom: &self.elements[20],
+            },
+            Column {
+                top: &self.elements[3],
+                center: Some(&self.elements[12]),
+                bottom: &self.elements[21],
+            },
+            Column {
+                top: &self.elements[4],
+                center: None,
+                bottom: &self.elements[21],
+            },
+            Column {
+                top: &self.elements[5],
+                center: Some(&self.elements[13]),
+                bottom: &self.elements[22],
+            },
+            Column {
+                top: &self.elements[6],
+                center: Some(&self.elements[14]),
+                bottom: &self.elements[23],
+            },
+            Column {
+                top: &self.elements[7],
+                center: Some(&self.elements[15]),
+                bottom: &self.elements[24],
+            },
+            Column {
+                top: &self.elements[8],
+                center: Some(&self.elements[16]),
+                bottom: &self.elements[25],
             },
         ]
     }
