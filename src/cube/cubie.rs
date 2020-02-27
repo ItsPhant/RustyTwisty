@@ -1,5 +1,5 @@
-use std::any::Any;
 use staticvec::{staticvec, StaticVec};
+use std::any::Any;
 
 /// Standard colors for 6 sided twisty puzzles, plus an uninitialized value.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -57,7 +57,7 @@ impl Face {
 
     pub const fn new_from_cubie_color(color: Color) -> Self {
         Self {
-            color
+            color,
         }
     }
 
@@ -97,7 +97,7 @@ pub trait BuildCubie {
 
 #[derive(Clone, Debug, Eq)]
 pub struct Center {
-    pub faces: StaticVec<Face, 1>
+    pub faces: StaticVec<Face, 1>,
 }
 
 impl PartialEq for Center {
@@ -106,13 +106,13 @@ impl PartialEq for Center {
     }
 }
 
-impl const Cubie for Center {
+impl Cubie for Center {
     fn as_any(&self) -> &dyn Any {
         self
     }
 }
 
-impl const BuildCubie for Center {
+impl BuildCubie for Center {
     fn new() -> Self {
         Self {
             faces: staticvec![Face::new(); 1],
@@ -160,7 +160,7 @@ impl Center {
             v.truncate(1);
 
             Box::new(Self {
-                faces: StaticVec::from(v)
+                faces: StaticVec::from(v),
             })
         }
     }
@@ -172,7 +172,7 @@ impl Center {
 
 #[derive(Clone, Debug, Eq)]
 pub struct Corner {
-    pub faces: StaticVec<Face, 3>
+    pub faces: StaticVec<Face, 3>,
 }
 
 impl PartialEq for Corner {
@@ -181,16 +181,16 @@ impl PartialEq for Corner {
     }
 }
 
-impl const Cubie for Corner {
+impl Cubie for Corner {
     fn as_any(&self) -> &dyn Any {
         self
     }
 }
 
-impl const BuildCubie for Corner {
+impl BuildCubie for Corner {
     fn new() -> Self {
         Self {
-            faces: staticvec![Face::new(); 3]
+            faces: staticvec![Face::new(); 3],
         }
     }
 }
@@ -198,7 +198,7 @@ impl const BuildCubie for Corner {
 impl Corner {
     pub fn new_boxed() -> Box<Self> {
         Box::new(Self {
-            faces: staticvec![Face::new(); 3]
+            faces: staticvec![Face::new(); 3],
         })
     }
 
@@ -220,7 +220,7 @@ impl Corner {
             Self::new()
         } else if (l > 0) && (l < 3) {
             Self {
-                faces: staticvec![vec[0]; 3]
+                faces: staticvec![vec[0]; 3],
             }
         } else {
             let mut v = vec.clone();
@@ -238,14 +238,14 @@ impl Corner {
             Box::new(Self::new())
         } else if (l > 0) && (l < 3) {
             Box::new(Self {
-                faces: staticvec![vec[0]; 3]
+                faces: staticvec![vec[0]; 3],
             })
         } else {
             let mut v = vec.clone();
             v.truncate(3);
 
             Box::new(Self {
-                faces: StaticVec::from(v)
+                faces: StaticVec::from(v),
             })
         }
     }
@@ -257,7 +257,7 @@ impl Corner {
 
 #[derive(Clone, Debug, Eq)]
 pub struct Edge {
-    pub faces: StaticVec<Face, 2>
+    pub faces: StaticVec<Face, 2>,
 }
 
 impl PartialEq for Edge {
@@ -266,13 +266,13 @@ impl PartialEq for Edge {
     }
 }
 
-impl const Cubie for Edge {
+impl Cubie for Edge {
     fn as_any(&self) -> &dyn Any {
         self
     }
 }
 
-impl const BuildCubie for Edge {
+impl BuildCubie for Edge {
     fn new() -> Self {
         Self {
             faces: staticvec![Face::new(); 2],
@@ -305,7 +305,7 @@ impl Edge {
             Self::new()
         } else if (l > 0) && (l < 2) {
             Self {
-                faces: staticvec![vec[0]; 2]
+                faces: staticvec![vec[0]; 2],
             }
         } else {
             let mut v = vec.clone();
@@ -323,7 +323,7 @@ impl Edge {
             Box::new(Self::new())
         } else if (l > 0) && (l < 2) {
             Box::new(Self {
-                faces: staticvec![vec[0]; 2]
+                faces: staticvec![vec[0]; 2],
             })
         } else {
             let mut v = vec.clone();
@@ -365,12 +365,13 @@ mod tests {
     #[test]
     fn center_cubie() {
         let a: Box<dyn Cubie> = cubie!("center");
-        let b: &Center =
-            match a.as_any().downcast_ref::<Center>() {
+        let b: &Center = match a.as_any().downcast_ref::<Center>() {
             Some(b) => b,
             None => panic!("&b isn't a Center!!"),
         };
-        assert_eq!(b.faces()[0], Face { color: Color::Uninit });
+        assert_eq!(b.faces()[0], Face {
+            color: Color::Uninit
+        });
     }
 
     #[test]
@@ -412,8 +413,7 @@ mod tests {
     #[test]
     fn cubie_macro() {
         let a: Box<dyn Cubie> = cubie!("corner");
-        let b: &Corner =
-            match a.as_any().downcast_ref::<Corner>() {
+        let b: &Corner = match a.as_any().downcast_ref::<Corner>() {
             Some(b) => b,
             None => panic!("&b isn't a Corner!!"),
         };

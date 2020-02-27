@@ -7,5 +7,5 @@ macro_rules! cubie {
             "edge" => crate::cube::cubie::Edge::new_boxed(),
             _ => panic!("Cubie type not found"),
         };
-    }
+    };
 }

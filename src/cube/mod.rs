@@ -1,4 +1,4 @@
 #[macro_use]
 pub mod macros;
-pub mod cubie;
 pub mod cube;
+pub mod cubie;

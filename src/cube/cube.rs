@@ -1,13 +1,13 @@
 use crate::cube::cubie::Cubie;
 
 pub struct Face<'a> {
-    pub elements: [&'a Box<dyn Cubie>; 9]
+    pub elements: [&'a Box<dyn Cubie>; 9],
 }
 
 impl<'a> Face<'a> {
     pub const fn new_from_array(arr: [&'a Box<dyn Cubie>; 9]) -> Self {
         Self {
-            elements: arr
+            elements: arr,
         }
     }
 }
@@ -21,14 +21,21 @@ pub enum FaceKind {
     Bottom,
 }
 
-pub struct Row {
-    pub center: Option<Box<dyn Cubie>>,
-    pub left: Box<dyn Cubie>,
-    pub right: Box<dyn Cubie>,
+/// A row of cubies. Each row has a left, right, and center, though the center
+/// middle row has the turning mechanism instead. For this reason, center is an
+/// Option<&'a Box<dyn Cubie>>.
+pub struct Row<'a> {
+    pub center: Option<&'a Box<dyn Cubie>>,
+    pub left: &'a Box<dyn Cubie>,
+    pub right: &'a Box<dyn Cubie>,
 }
 
-impl Row {
-    pub const fn new(left: Box<dyn Cubie>, center: Option<Box<dyn Cubie>>, right: Box<dyn Cubie>) -> Self {
+impl<'a> Row<'a> {
+    pub const fn new(
+        left: &'a Box<dyn Cubie>,
+        center: Option<&'a Box<dyn Cubie>>,
+        right: &'a Box<dyn Cubie>,
+    ) -> Self {
         Row {
             left,
             center,
@@ -59,7 +66,7 @@ macro_rules! initialize_cube_face {
             &$o.elements[$x[7]],
             &$o.elements[$x[8]],
         ])
-    }
+    };
 }
 
 impl Cube {
@@ -77,53 +84,69 @@ impl Cube {
     pub fn new() -> Self {
         Self {
             elements: [
-                cubie!("corner"), cubie!("edge"),   cubie!("corner"),
-                cubie!("edge"),   cubie!("center"), cubie!("edge"),
-                cubie!("corner"), cubie!("edge"),   cubie!("corner"),
-                cubie!("edge"),   cubie!("center"), cubie!("edge"),
-                cubie!("center"),                   cubie!("center"),
-                cubie!("edge"),   cubie!("center"), cubie!("edge"),
-                cubie!("corner"), cubie!("edge"),   cubie!("corner"),
-                cubie!("edge"),   cubie!("corner"), cubie!("edge"),
-                cubie!("corner"), cubie!("edge"),   cubie!("corner"),
-            ]
+                cubie!("corner"),
+                cubie!("edge"),
+                cubie!("corner"),
+                cubie!("edge"),
+                cubie!("center"),
+                cubie!("edge"),
+                cubie!("corner"),
+                cubie!("edge"),
+                cubie!("corner"),
+                cubie!("edge"),
+                cubie!("center"),
+                cubie!("edge"),
+                cubie!("center"),
+                cubie!("center"),
+                cubie!("edge"),
+                cubie!("center"),
+                cubie!("edge"),
+                cubie!("corner"),
+                cubie!("edge"),
+                cubie!("corner"),
+                cubie!("edge"),
+                cubie!("corner"),
+                cubie!("edge"),
+                cubie!("corner"),
+                cubie!("edge"),
+                cubie!("corner"),
+            ],
         }
     }
 
     pub const fn corners(&self) -> [&Box<dyn Cubie>; 8] {
         [
-            &self.elements[0], &self.elements[2], &self.elements[6],
-            &self.elements[8], &self.elements[17], &self.elements[19],
-            &self.elements[23], &self.elements[25],
+            &self.elements[0],
+            &self.elements[2],
+            &self.elements[6],
+            &self.elements[8],
+            &self.elements[17],
+            &self.elements[19],
+            &self.elements[23],
+            &self.elements[25],
         ]
     }
 
     pub fn face(&self, s: FaceKind) -> Face {
         match s {
             FaceKind::Top => {
-                initialize_cube_face!(&self,
-                                      [0, 1, 2, 3, 4, 5, 6, 7, 8])
-            },
+                initialize_cube_face!(&self, [0, 1, 2, 3, 4, 5, 6, 7, 8])
+            }
             FaceKind::Left => {
-                initialize_cube_face!(&self,
-                                      [0, 3, 6, 9, 12, 14, 17, 20, 23])
-            },
+                initialize_cube_face!(&self, [0, 3, 6, 9, 12, 14, 17, 20, 23])
+            }
             FaceKind::Right => {
-                initialize_cube_face!(&self,
-                                      [2, 5, 8, 11, 13, 16, 19, 22, 25])
-            },
+                initialize_cube_face!(&self, [2, 5, 8, 11, 13, 16, 19, 22, 25])
+            }
             FaceKind::Front => {
-                initialize_cube_face!(&self,
-                                      [6, 7, 8, 14, 15, 16, 23, 24, 25])
-            },
+                initialize_cube_face!(&self, [6, 7, 8, 14, 15, 16, 23, 24, 25])
+            }
             FaceKind::Back => {
-                initialize_cube_face!(&self,
-                                      [0, 1, 2, 9, 10, 11, 17, 18, 19])
-            },
-            FaceKind::Bottom => {
-                initialize_cube_face!(&self,
-                                      [17, 18, 19, 20, 21, 22, 23, 24, 25])
-            },
+                initialize_cube_face!(&self, [0, 1, 2, 9, 10, 11, 17, 18, 19])
+            }
+            FaceKind::Bottom => initialize_cube_face!(&self, [
+                17, 18, 19, 20, 21, 22, 23, 24, 25
+            ]),
         }
     }
 }
@@ -131,9 +154,7 @@ impl Cube {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::cube::cubie::{
-        Corner as CornerCubie,
-    };
+    use crate::cube::cubie::Corner as CornerCubie;
 
     #[test]
     fn cube_init() {
@@ -146,23 +167,22 @@ mod tests {
     fn get_face_array() {
         let c = Cube::new();
 
-        let cf: Face =
-            initialize_cube_face!(c, [0, 1, 2, 3, 4, 5, 6, 7, 8]);
+        let cf: Face = initialize_cube_face!(c, [0, 1, 2, 3, 4, 5, 6, 7, 8]);
 
         assert_eq!(cf.elements.len(), 9);
         let cubie: &Box<dyn Cubie> = &c.elements[0];
         let cornercubie: &CornerCubie =
             match cubie.as_any().downcast_ref::<CornerCubie>() {
-            Some(i) => i,
-            None => panic!("cubie isn't a CornerCubie!!"),
-        };
+                Some(i) => i,
+                None => panic!("cubie isn't a CornerCubie!!"),
+            };
 
         let cubie2: &Box<dyn Cubie> = cf.elements[0];
         let cornercubie2: &CornerCubie =
             match cubie2.as_any().downcast_ref::<CornerCubie>() {
-            Some(i) => i,
-            None => panic!("cubie2 isn't a CornerCubie!!"),
-        };
+                Some(i) => i,
+                None => panic!("cubie2 isn't a CornerCubie!!"),
+            };
 
         assert_eq!(cornercubie.faces, cornercubie2.faces);
     }
