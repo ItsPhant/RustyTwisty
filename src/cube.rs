@@ -1,4 +1,5 @@
 use std::any::Any;
+use staticvec::{staticvec, StaticVec};
 
 /// Standard colors for 6 sided twisty puzzles, plus an uninitialized value.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -13,7 +14,7 @@ pub enum CubieColor {
 }
 
 impl CubieColor {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         CubieColor::Uninit
     }
 
@@ -79,7 +80,7 @@ impl CubieFace {
 /// ```
 /// use rustytwisty::cube::*;
 ///
-/// let a: Box<dyn Cubie> = CenterCubie::new();
+/// let a: Box<dyn Cubie> = CenterCubie::new_boxed();
 /// let b: &CenterCubie =
 ///     match a.as_any().downcast_ref::<CenterCubie>() {
 ///     Some(b) => b,
@@ -90,9 +91,13 @@ pub trait Cubie {
     fn as_any(&self) -> &dyn Any;
 }
 
+pub trait CubieHelper {
+    fn new() -> Self;
+}
+
 #[derive(Clone, Debug, Eq)]
 pub struct CenterCubie {
-    pub faces: Vec<CubieFace>
+    pub faces: StaticVec<CubieFace, 1>
 }
 
 impl PartialEq for CenterCubie {
@@ -101,27 +106,73 @@ impl PartialEq for CenterCubie {
     }
 }
 
-impl Cubie for CenterCubie {
+impl const Cubie for CenterCubie {
     fn as_any(&self) -> &dyn Any {
         self
     }
 }
 
+impl const CubieHelper for CenterCubie {
+    fn new() -> Self {
+        Self {
+            faces: staticvec![CubieFace::new(); 1],
+        }
+    }
+}
+
 impl CenterCubie {
-    pub fn new() -> Box<Self> {
+    pub fn new_boxed() -> Box<Self> {
         Box::new(Self {
-            faces: vec![CubieFace::new(); 1]
+            faces: staticvec![CubieFace::new(); 1],
         })
     }
 
-    pub fn get_faces(&self) -> &Vec<CubieFace> {
+    pub const fn new_from_array(arr: [CubieFace; 1]) -> Self {
+        Self {
+            faces: StaticVec::new_from_const_array(arr),
+        }
+    }
+
+    pub fn new_boxed_from_array(arr: [CubieFace; 1]) -> Box<Self> {
+        Box::new(Self {
+            faces: StaticVec::new_from_array(arr),
+        })
+    }
+
+    pub fn new_from_vec(vec: Vec<CubieFace>) -> Self {
+        if vec.len() == 0 {
+            Self::new()
+        } else {
+            let mut v = vec.clone();
+            v.truncate(1);
+
+            Self {
+                faces: StaticVec::from(v),
+            }
+        }
+    }
+
+    pub fn new_boxed_from_vec(vec: Vec<CubieFace>) -> Box<Self> {
+        if vec.len() == 0 {
+            Box::new(Self::new())
+        } else {
+            let mut v = vec.clone();
+            v.truncate(1);
+
+            Box::new(Self {
+                faces: StaticVec::from(v)
+            })
+        }
+    }
+
+    pub const fn get_faces(&self) -> &StaticVec<CubieFace, 1> {
         &self.faces
     }
 }
 
 #[derive(Clone, Debug, Eq)]
 pub struct CornerCubie {
-    pub faces: Vec<CubieFace>
+    pub faces: StaticVec<CubieFace, 3>
 }
 
 impl PartialEq for CornerCubie {
@@ -130,27 +181,83 @@ impl PartialEq for CornerCubie {
     }
 }
 
-impl Cubie for CornerCubie {
+impl const Cubie for CornerCubie {
     fn as_any(&self) -> &dyn Any {
         self
     }
 }
 
+impl const CubieHelper for CornerCubie {
+    fn new() -> Self {
+        Self {
+            faces: staticvec![CubieFace::new(); 3]
+        }
+    }
+}
+
 impl CornerCubie {
-    pub fn new() -> Box<Self> {
+    pub fn new_boxed() -> Box<Self> {
         Box::new(Self {
-            faces: vec![CubieFace::new(); 3]
+            faces: staticvec![CubieFace::new(); 3]
         })
     }
 
-    pub fn get_faces(&self) -> &Vec<CubieFace> {
+    pub const fn new_from_array(arr: [CubieFace; 3]) -> Self {
+        Self {
+            faces: StaticVec::new_from_const_array(arr),
+        }
+    }
+
+    pub fn new_boxed_from_array(arr: [CubieFace; 3]) -> Box<Self> {
+        Box::new(Self {
+            faces: StaticVec::new_from_array(arr),
+        })
+    }
+
+    pub fn new_from_vec(vec: Vec<CubieFace>) -> Self {
+        let l = vec.len();
+        if l == 0 {
+            Self::new()
+        } else if (l > 0) && (l < 3) {
+            Self {
+                faces: staticvec![vec[0]; 3]
+            }
+        } else {
+            let mut v = vec.clone();
+            v.truncate(1);
+
+            Self {
+                faces: StaticVec::from(v),
+            }
+        }
+    }
+
+    pub fn new_boxed_from_vec(vec: Vec<CubieFace>) -> Box<Self> {
+        let l = vec.len();
+        if l == 0 {
+            Box::new(Self::new())
+        } else if (l > 0) && (l < 3) {
+            Box::new(Self {
+                faces: staticvec![vec[0]; 3]
+            })
+        } else {
+            let mut v = vec.clone();
+            v.truncate(3);
+
+            Box::new(Self {
+                faces: StaticVec::from(v)
+            })
+        }
+    }
+
+    pub const fn get_faces(&self) -> &StaticVec<CubieFace, 3> {
         &self.faces
     }
 }
 
 #[derive(Clone, Debug, Eq)]
 pub struct EdgeCubie {
-    pub faces: Vec<CubieFace>
+    pub faces: StaticVec<CubieFace, 2>
 }
 
 impl PartialEq for EdgeCubie {
@@ -159,31 +266,87 @@ impl PartialEq for EdgeCubie {
     }
 }
 
-impl Cubie for EdgeCubie {
+impl const Cubie for EdgeCubie {
     fn as_any(&self) -> &dyn Any {
         self
     }
 }
 
+impl const CubieHelper for EdgeCubie {
+    fn new() -> Self {
+        Self {
+            faces: staticvec![CubieFace::new(); 2],
+        }
+    }
+}
+
 impl EdgeCubie {
-    pub fn new() -> Box<Self> {
+    pub fn new_boxed() -> Box<Self> {
         Box::new(Self {
-            faces: vec![CubieFace::new(); 2]
+            faces: staticvec![CubieFace::new(); 2],
         })
     }
 
-    pub fn get_faces(&self) -> &Vec<CubieFace> {
+    pub const fn new_from_array(arr: [CubieFace; 2]) -> Self {
+        Self {
+            faces: StaticVec::new_from_const_array(arr),
+        }
+    }
+
+    pub fn new_boxed_from_array(arr: [CubieFace; 2]) -> Box<Self> {
+        Box::new(Self {
+            faces: StaticVec::new_from_array(arr),
+        })
+    }
+
+    pub fn new_from_vec(vec: Vec<CubieFace>) -> Self {
+        let l = vec.len();
+        if l == 0 {
+            Self::new()
+        } else if (l > 0) && (l < 2) {
+            Self {
+                faces: staticvec![vec[0]; 2]
+            }
+        } else {
+            let mut v = vec.clone();
+            v.truncate(1);
+
+            Self {
+                faces: StaticVec::from(v),
+            }
+        }
+    }
+
+    pub fn new_boxed_from_vec(vec: Vec<CubieFace>) -> Box<Self> {
+        let l = vec.len();
+        if l == 0 {
+            Box::new(Self::new())
+        } else if (l > 0) && (l < 2) {
+            Box::new(Self {
+                faces: staticvec![vec[0]; 2]
+            })
+        } else {
+            let mut v = vec.clone();
+            v.truncate(1);
+
+            Box::new(Self {
+                faces: StaticVec::from(v),
+            })
+        }
+    }
+
+    pub const fn get_faces(&self) -> &StaticVec<CubieFace, 2> {
         &self.faces
     }
 }
 
-#[macro_export]
+#[macro_use]
 macro_rules! cubie {
     ($x:expr) => {
         match $x {
-            "center" => CenterCubie::new(),
-            "corner" => CornerCubie::new(),
-            "edge" => EdgeCubie::new(),
+            "center" => CenterCubie::new_boxed(),
+            "corner" => CornerCubie::new_boxed(),
+            "edge" => EdgeCubie::new_boxed(),
             _ => panic!("Cubie type not found"),
         };
     }
@@ -194,7 +357,7 @@ pub struct CubeFace<'a> {
 }
 
 impl<'a> CubeFace<'a> {
-    pub fn new_from_array(arr: [&'a Box<dyn Cubie>; 9]) -> Self {
+    pub const fn new_from_array(arr: [&'a Box<dyn Cubie>; 9]) -> Self {
         Self {
             elements: arr
         }
@@ -214,7 +377,7 @@ pub struct Cube {
     elements: [Box<dyn Cubie>; 26],
 }
 
-#[macro_export]
+#[macro_use]
 macro_rules! initialize_cube_face {
     ($o:expr, $x:expr) => {
         CubeFace::new_from_array([
@@ -259,7 +422,7 @@ impl Cube {
         }
     }
 
-    pub fn get_corners(&self) -> [&Box<dyn Cubie>; 8] {
+    pub const fn get_corners(&self) -> [&Box<dyn Cubie>; 8] {
         [
             &self.elements[0], &self.elements[2], &self.elements[6],
             &self.elements[8], &self.elements[17], &self.elements[19],
@@ -328,6 +491,42 @@ mod tests {
             None => panic!("&b isn't a CenterCubie!!"),
         };
         assert_eq!(b.get_faces()[0], CubieFace { color: CubieColor::Uninit });
+    }
+
+    #[test]
+    fn new_from_array() {
+        let a = CenterCubie::new_from_array([CubieFace::new(); 1]);
+
+        // new_from_array works with good value
+        assert_eq!(a.faces.len(), 1);
+    }
+
+    #[test]
+    fn new_from_vec() {
+        let a = CenterCubie::new_boxed_from_vec(vec![CubieFace::new(); 1]);
+
+        // new_from_vec works with good value
+        assert_eq!(a.faces.len(), 1);
+
+        let a = CenterCubie::new_boxed_from_vec(vec![CubieFace::new(); 10]);
+
+        // too big value is truncated
+        assert_eq!(a.faces.len(), 1);
+
+        let a = CenterCubie::new_boxed_from_vec(vec![CubieFace::new(); 0]);
+
+        // too little value means values are added onto faces
+        assert_eq!(a.faces.len(), 1);
+
+        let a = CornerCubie::new_boxed_from_vec(vec![CubieFace::new(); 1]);
+
+        // values added on to correct cubie face number
+        assert_eq!(a.faces.len(), 3);
+
+        let a = CornerCubie::new_boxed_from_vec(vec![CubieFace::new(); 4]);
+
+        // truncation works for larger cubie types
+        assert_eq!(a.faces.len(), 3);
     }
 
     #[test]
