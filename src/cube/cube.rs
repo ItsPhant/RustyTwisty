@@ -82,6 +82,30 @@ pub enum CornerPosition {
     BottomFrontRight,
 }
 
+pub enum ColumnPosition {
+    BackLeft,
+    BackMiddle,
+    BackRight,
+    CenterLeft,
+    CenterMiddle,
+    CenterRight,
+    FrontLeft,
+    FrontMiddle,
+    FrontRight,
+}
+
+pub enum RowPosition {
+    TopBack,
+    TopCenter,
+    TopFront,
+    MiddleBack,
+    MiddleCenter,
+    MiddleFront,
+    BottomBack,
+    BottomCenter,
+    BottomFront,
+}
+
 pub struct Cube {
     pub elements: [Box<dyn Cubie>; 26],
 }
@@ -148,129 +172,201 @@ impl Cube {
         }
     }
 
+    pub const fn corner_raw(&self, pos: usize) -> &Box<dyn Cubie> {
+        match pos {
+            0 => &self.elements[0],
+            1 => &self.elements[2],
+            2 => &self.elements[6],
+            3 => &self.elements[8],
+            4 => &self.elements[17],
+            5 => &self.elements[19],
+            6 => &self.elements[23],
+            7 => &self.elements[25],
+            _ => panic!("Exceeded corner count"),
+        }
+    }
+
     pub const fn corner(&self, pos: CornerPosition) -> &Box<dyn Cubie> {
         match pos {
-            CornerPosition::TopBackLeft => &self.elements[0],
-            CornerPosition::TopBackRight => &self.elements[2],
-            CornerPosition::TopFrontLeft => &self.elements[6],
-            CornerPosition::TopFrontRight => &self.elements[8],
-            CornerPosition::BottomBackLeft => &self.elements[17],
-            CornerPosition::BottomBackRight => &self.elements[19],
-            CornerPosition::BottomFrontLeft => &self.elements[23],
-            CornerPosition::BottomFrontRight => &self.elements[25],
+            CornerPosition::TopBackLeft => Cube::corner_raw(&self, 0),
+            CornerPosition::TopBackRight => Cube::corner_raw(&self, 1),
+            CornerPosition::TopFrontLeft => Cube::corner_raw(&self, 2),
+            CornerPosition::TopFrontRight => Cube::corner_raw(&self, 3),
+            CornerPosition::BottomBackLeft => Cube::corner_raw(&self, 4),
+            CornerPosition::BottomBackRight => Cube::corner_raw(&self, 5),
+            CornerPosition::BottomFrontLeft => Cube::corner_raw(&self, 6),
+            CornerPosition::BottomFrontRight => Cube::corner_raw(&self, 7),
         }
     }
 
     pub const fn corners(&self) -> [&Box<dyn Cubie>; 8] {
         [
-            &self.elements[0],
-            &self.elements[2],
-            &self.elements[6],
-            &self.elements[8],
-            &self.elements[17],
-            &self.elements[19],
-            &self.elements[23],
-            &self.elements[25],
+            Cube::corner_raw(&self, 0),
+            Cube::corner_raw(&self, 1),
+            Cube::corner_raw(&self, 2),
+            Cube::corner_raw(&self, 3),
+            Cube::corner_raw(&self, 4),
+            Cube::corner_raw(&self, 5),
+            Cube::corner_raw(&self, 6),
+            Cube::corner_raw(&self, 7),
         ]
     }
 
-    pub const fn rows(&self) -> [Row; 9] {
-        [
-            Row {
+    pub const fn row_raw(&self, pos: usize) -> Row {
+        match pos {
+            0 => Row {
                 left: &self.elements[0],
                 center: Some(&self.elements[1]),
                 right: &self.elements[2],
             },
-            Row {
+            1 => Row {
                 left: &self.elements[3],
                 center: Some(&self.elements[4]),
                 right: &self.elements[5],
             },
-            Row {
+            2 => Row {
                 left: &self.elements[6],
                 center: Some(&self.elements[7]),
                 right: &self.elements[8],
             },
-            Row {
+            3 => Row {
                 left: &self.elements[9],
                 center: Some(&self.elements[10]),
                 right: &self.elements[11],
             },
-            Row {
+            4 => Row {
                 left: &self.elements[12],
                 center: None,
                 right: &self.elements[13],
             },
-            Row {
+            5 => Row {
                 left: &self.elements[14],
                 center: Some(&self.elements[15]),
                 right: &self.elements[16],
             },
-            Row {
+            6 => Row {
                 left: &self.elements[17],
                 center: Some(&self.elements[18]),
                 right: &self.elements[19],
             },
-            Row {
+            7 => Row {
                 left: &self.elements[20],
                 center: Some(&self.elements[21]),
                 right: &self.elements[22],
             },
-            Row {
+            8 => Row {
                 left: &self.elements[23],
                 center: Some(&self.elements[24]),
                 right: &self.elements[25],
             },
+            _ => panic!("Exceeded row count"),
+        }
+    }
+
+    pub const fn row(&self, pos: RowPosition) -> Row {
+        match pos {
+            RowPosition::TopBack => Cube::row_raw(&self, 0),
+            RowPosition::TopCenter => Cube::row_raw(&self, 1),
+            RowPosition::TopFront => Cube::row_raw(&self, 2),
+            RowPosition::MiddleBack => Cube::row_raw(&self, 3),
+            RowPosition::MiddleCenter => Cube::row_raw(&self, 4),
+            RowPosition::MiddleFront => Cube::row_raw(&self, 5),
+            RowPosition::BottomBack => Cube::row_raw(&self, 6),
+            RowPosition::BottomCenter => Cube::row_raw(&self, 7),
+            RowPosition::BottomFront => Cube::row_raw(&self, 8),
+        }
+    }
+
+    pub const fn rows(&self) -> [Row; 9] {
+        [
+            Cube::row_raw(&self, 0),
+            Cube::row_raw(&self, 1),
+            Cube::row_raw(&self, 2),
+            Cube::row_raw(&self, 3),
+            Cube::row_raw(&self, 4),
+            Cube::row_raw(&self, 5),
+            Cube::row_raw(&self, 6),
+            Cube::row_raw(&self, 7),
+            Cube::row_raw(&self, 8),
         ]
     }
 
-    pub const fn columns(&self) -> [Column; 9] {
-        [
-            Column {
+    pub const fn column_raw(&self, pos: usize) -> Column {
+        match pos {
+            0 => Column {
                 top: &self.elements[0],
                 center: Some(&self.elements[9]),
                 bottom: &self.elements[18],
             },
-            Column {
+            1 => Column {
                 top: &self.elements[1],
                 center: Some(&self.elements[10]),
                 bottom: &self.elements[19],
             },
-            Column {
+            2 => Column {
                 top: &self.elements[2],
                 center: Some(&self.elements[11]),
                 bottom: &self.elements[20],
             },
-            Column {
+            3 => Column {
                 top: &self.elements[3],
                 center: Some(&self.elements[12]),
                 bottom: &self.elements[21],
             },
-            Column {
+            4 => Column {
                 top: &self.elements[4],
                 center: None,
                 bottom: &self.elements[21],
             },
-            Column {
+            5 => Column {
                 top: &self.elements[5],
                 center: Some(&self.elements[13]),
                 bottom: &self.elements[22],
             },
-            Column {
+            6 => Column {
                 top: &self.elements[6],
                 center: Some(&self.elements[14]),
                 bottom: &self.elements[23],
             },
-            Column {
+            7 => Column {
                 top: &self.elements[7],
                 center: Some(&self.elements[15]),
                 bottom: &self.elements[24],
             },
-            Column {
+            8 => Column {
                 top: &self.elements[8],
                 center: Some(&self.elements[16]),
                 bottom: &self.elements[25],
             },
+            _ => panic!("Exceeded column count"),
+        }
+    }
+
+    pub const fn column(&self, pos: ColumnPosition) -> Column {
+        match pos {
+            ColumnPosition::BackLeft => Cube::column_raw(&self, 0),
+            ColumnPosition::BackMiddle => Cube::column_raw(&self, 1),
+            ColumnPosition::BackRight => Cube::column_raw(&self, 2),
+            ColumnPosition::CenterLeft => Cube::column_raw(&self, 3),
+            ColumnPosition::CenterMiddle => Cube::column_raw(&self, 4),
+            ColumnPosition::CenterRight => Cube::column_raw(&self, 5),
+            ColumnPosition::FrontLeft => Cube::column_raw(&self, 6),
+            ColumnPosition::FrontMiddle => Cube::column_raw(&self, 7),
+            ColumnPosition::FrontRight => Cube::column_raw(&self, 8),
+        }
+    }
+
+    pub const fn columns(&self) -> [Column; 9] {
+        [
+            Cube::column_raw(&self, 0),
+            Cube::column_raw(&self, 1),
+            Cube::column_raw(&self, 2),
+            Cube::column_raw(&self, 3),
+            Cube::column_raw(&self, 4),
+            Cube::column_raw(&self, 5),
+            Cube::column_raw(&self, 6),
+            Cube::column_raw(&self, 7),
+            Cube::column_raw(&self, 8),
         ]
     }
 
