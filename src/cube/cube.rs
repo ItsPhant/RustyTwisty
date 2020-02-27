@@ -84,7 +84,7 @@ impl Cube {
     pub fn new() -> Self {
         Self {
             elements: [
-                cubie!("corner"),
+                cubie!("corner"), // Top slice (9 cubies)
                 cubie!("edge"),
                 cubie!("corner"),
                 cubie!("edge"),
@@ -93,7 +93,7 @@ impl Cube {
                 cubie!("corner"),
                 cubie!("edge"),
                 cubie!("corner"),
-                cubie!("edge"),
+                cubie!("edge"), // Middle slice (8 cubies)
                 cubie!("center"),
                 cubie!("edge"),
                 cubie!("center"),
@@ -101,7 +101,7 @@ impl Cube {
                 cubie!("edge"),
                 cubie!("center"),
                 cubie!("edge"),
-                cubie!("corner"),
+                cubie!("corner"), // Bottom slice (9 cubies)
                 cubie!("edge"),
                 cubie!("corner"),
                 cubie!("edge"),
