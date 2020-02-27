@@ -48,6 +48,9 @@ impl<'a> Row<'a> {
     }
 }
 
+/// A column of cubies. Each column has a top, bottom, and center, though not
+/// every column will have a center. To represent this, the center field uses
+/// the type Option<&'a Box<dyn Cubie>>.
 pub struct Column<'a> {
     pub center: Option<&'a Box<dyn Cubie>>,
     pub top: &'a Box<dyn Cubie>,
