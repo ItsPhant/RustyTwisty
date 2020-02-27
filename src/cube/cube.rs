@@ -127,6 +127,56 @@ impl Cube {
         ]
     }
 
+    pub const fn rows(&self) -> [Row; 9] {
+        [
+            Row {
+                left: &self.elements[0],
+                center: Some(&self.elements[1]),
+                right: &self.elements[2],
+            },
+            Row {
+                left: &self.elements[3],
+                center: Some(&self.elements[4]),
+                right: &self.elements[5],
+            },
+            Row {
+                left: &self.elements[6],
+                center: Some(&self.elements[7]),
+                right: &self.elements[8],
+            },
+            Row {
+                left: &self.elements[9],
+                center: Some(&self.elements[10]),
+                right: &self.elements[11],
+            },
+            Row {
+                left: &self.elements[12],
+                center: None,
+                right: &self.elements[13],
+            },
+            Row {
+                left: &self.elements[14],
+                center: Some(&self.elements[15]),
+                right: &self.elements[16],
+            },
+            Row {
+                left: &self.elements[17],
+                center: Some(&self.elements[18]),
+                right: &self.elements[19],
+            },
+            Row {
+                left: &self.elements[20],
+                center: Some(&self.elements[21]),
+                right: &self.elements[22],
+            },
+            Row {
+                left: &self.elements[23],
+                center: Some(&self.elements[24]),
+                right: &self.elements[25],
+            },
+        ]
+    }
+
     pub fn face(&self, s: FaceKind) -> Face {
         match s {
             FaceKind::Top => {
