@@ -1,6 +1,7 @@
 use std::any::Any;
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+/// Standard colors for 6 sided twisty puzzles, plus an uninitialized value.
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum CubieColor {
     Blue,
     Green,
@@ -15,9 +16,27 @@ impl CubieColor {
     pub fn new() -> Self {
         CubieColor::Uninit
     }
+
+    /// Returns the standardized opposite color of a CubieColor instance
+    pub const fn get_opposite_color(&self) -> Self {
+        CubieColor::get_opposite_color_from_color(&self)
+    }
+
+    /// Returns the standardized opposite color of a CubieColor value
+    pub const fn get_opposite_color_from_color(color: &Self) -> Self {
+        match color {
+            CubieColor::Blue => CubieColor::Green,
+            CubieColor::Green => CubieColor::Blue,
+            CubieColor::Orange => CubieColor::Red,
+            CubieColor::Red => CubieColor::Orange,
+            CubieColor::White => CubieColor::Yellow,
+            CubieColor::Yellow => CubieColor::White,
+            CubieColor::Uninit => CubieColor::Uninit,
+        }
+    }
 }
 
-#[derive(Clone, Debug, Eq)]
+#[derive(Copy, Clone, Debug, Eq)]
 pub struct CubieFace {
     pub color: CubieColor,
 }
@@ -29,10 +48,20 @@ impl PartialEq for CubieFace {
 }
 
 impl CubieFace {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {
             color: CubieColor::new(),
         }
+    }
+
+    pub const fn new_from_cubie_color(color: CubieColor) -> Self {
+        Self {
+            color
+        }
+    }
+
+    pub const fn get_opposite_color(&self) -> CubieColor {
+        CubieColor::get_opposite_color(&self.color)
     }
 }
 
