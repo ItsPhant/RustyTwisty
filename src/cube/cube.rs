@@ -76,9 +76,9 @@ impl Cube {
     /// left to right, back to front, and top to bottom
     ///
     ///  Top     Middle    Bottom
-    /// 0 1 2    9 10 11  18 19 20
-    /// 3 4 5   12 13 14  21 22 23
-    /// 6 7 8   15 16 17  24 25 26
+    /// 0 1 2    9 10 11  17 18 19
+    /// 3 4 5   12    13  20 21 22
+    /// 6 7 8   14 15 16  23 24 25
     ///
     /// where 0 would be the top left corner cubie in the back.
     pub fn new() -> Self {
