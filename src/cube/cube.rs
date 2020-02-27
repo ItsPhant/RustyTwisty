@@ -177,7 +177,7 @@ impl Cube {
         ]
     }
 
-    pub fn face(&self, s: FaceKind) -> Face {
+    pub const fn face(&self, s: FaceKind) -> Face {
         match s {
             FaceKind::Top => {
                 initialize_cube_face!(&self, [0, 1, 2, 3, 4, 5, 6, 7, 8])
