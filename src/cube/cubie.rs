@@ -91,10 +91,6 @@ pub trait Cubie {
     fn as_any(&self) -> &dyn Any;
 }
 
-pub trait BuildCubie {
-    fn new() -> Self;
-}
-
 #[derive(Clone, Debug, Eq)]
 pub struct Center {
     pub faces: StaticVec<Face, 1>,
@@ -112,15 +108,13 @@ impl Cubie for Center {
     }
 }
 
-impl BuildCubie for Center {
-    fn new() -> Self {
+impl Center {
+    pub const fn new() -> Self {
         Self {
             faces: staticvec![Face::new(); 1],
         }
     }
-}
 
-impl Center {
     pub fn new_boxed() -> Box<Self> {
         Box::new(Self {
             faces: staticvec![Face::new(); 1],
@@ -187,15 +181,13 @@ impl Cubie for Corner {
     }
 }
 
-impl BuildCubie for Corner {
-    fn new() -> Self {
+impl Corner {
+    pub const fn new() -> Self {
         Self {
             faces: staticvec![Face::new(); 3],
         }
     }
-}
 
-impl Corner {
     pub fn new_boxed() -> Box<Self> {
         Box::new(Self {
             faces: staticvec![Face::new(); 3],
@@ -272,15 +264,13 @@ impl Cubie for Edge {
     }
 }
 
-impl BuildCubie for Edge {
-    fn new() -> Self {
+impl Edge {
+    pub const fn new() -> Self {
         Self {
             faces: staticvec![Face::new(); 2],
         }
     }
-}
 
-impl Edge {
     pub fn new_boxed() -> Box<Self> {
         Box::new(Self {
             faces: staticvec![Face::new(); 2],
