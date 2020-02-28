@@ -78,8 +78,7 @@ impl Face {
 /// # Examples
 ///
 /// ```
-/// use rustytwisty::cube::cubie::*;
-///
+/// # use rustytwisty::cube::cubie::*;
 /// let a: Box<dyn Cubie> = Center::new_boxed();
 /// let b: &Center =
 ///     match a.as_any().downcast_ref::<Center>() {

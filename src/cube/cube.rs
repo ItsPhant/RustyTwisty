@@ -113,8 +113,7 @@ pub enum RowPosition {
 ///
 /// # Examples
 /// ```
-/// use rustytwisty::cube::{cube::*, cubie::*};
-///
+/// # use rustytwisty::cube::{cube::*, cubie::*};
 /// let cube = Cube::new();
 ///
 /// let row = Cube::row(&cube, RowPosition::TopCenter);
