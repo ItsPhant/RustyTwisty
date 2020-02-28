@@ -142,8 +142,10 @@ macro_rules! initialize_cube_face {
 }
 
 impl Cube {
-    /// Initializes a 3x3 Cube with elements in the form of an array with
-    /// elements in three slices in the following order:
+    /// Initializes a 3x3 Cube comprised of [`Cubie'] objects in the form of an
+    /// array with elements in three slices.
+    ///
+    /// This array is structured using the following format:
     ///
     /// left to right, back to front, and top to bottom
     ///
@@ -186,6 +188,16 @@ impl Cube {
         }
     }
 
+    /// Returns a corner [`Cubie`] using the cube's underlying element
+    /// structure.
+    ///
+    /// # Examples
+    /// ```
+    /// # use rustytwisty::cube::cube::*;
+    /// let cube = Cube::new();
+    ///
+    /// let corner = Cube::corner_raw(&cube, 4);
+    /// ```
     pub const fn corner_raw(&self, pos: usize) -> &Box<dyn Cubie> {
         match pos {
             0 => &self.elements[0],
@@ -200,6 +212,15 @@ impl Cube {
         }
     }
 
+    /// Returns a corner [`Cubie`] using the [`CornerPosition`] enum.
+    ///
+    /// # Examples
+    /// ```
+    /// # use rustytwisty::cube::cube::*;
+    /// let cube = Cube::new();
+    ///
+    /// let corner = Cube::corner(&cube, CornerPosition::BottomBackLeft);
+    /// ```
     pub const fn corner(&self, pos: CornerPosition) -> &Box<dyn Cubie> {
         match pos {
             CornerPosition::TopBackLeft => Cube::corner_raw(&self, 0),
@@ -213,6 +234,15 @@ impl Cube {
         }
     }
 
+    /// Returns an array containing all of the cube's corner [`Cubie`] objects.
+    ///
+    /// # Examples
+    /// ```
+    /// # use rustytwisty::cube::cube::*;
+    /// let cube = Cube::new();
+    ///
+    /// let corners = Cube::corners(&cube);
+    /// ```
     pub const fn corners(&self) -> [&Box<dyn Cubie>; 8] {
         [
             Cube::corner_raw(&self, 0),
@@ -226,6 +256,15 @@ impl Cube {
         ]
     }
 
+    /// Returns a [`Row`] using the cube's underlying element structure.
+    ///
+    /// # Examples
+    /// ```
+    /// # use rustytwisty::cube::cube::*;
+    /// let cube = Cube::new();
+    ///
+    /// let row = Cube::row_raw(&cube, 5);
+    /// ```
     pub const fn row_raw(&self, pos: usize) -> Row {
         match pos {
             0 => Row {
@@ -277,6 +316,15 @@ impl Cube {
         }
     }
 
+    /// Returns a [`Row`] using the [`RowPosition`] enum.
+    ///
+    /// # Examples
+    /// ```
+    /// # use rustytwisty::cube::cube::*;
+    /// let cube = Cube::new();
+    ///
+    /// let row = Cube::row(&cube, RowPosition::MiddleBack);
+    /// ```
     pub const fn row(&self, pos: RowPosition) -> Row {
         match pos {
             RowPosition::TopBack => Cube::row_raw(&self, 0),
@@ -291,6 +339,15 @@ impl Cube {
         }
     }
 
+    /// Returns an array of [`Row`] objects for each row in the cube.
+    ///
+    /// # Examples
+    /// ```
+    /// # use rustytwisty::cube::cube::*;
+    /// let cube = Cube::new();
+    ///
+    /// let rows = Cube::rows(&cube);
+    /// ```
     pub const fn rows(&self) -> [Row; 9] {
         [
             Cube::row_raw(&self, 0),
@@ -305,6 +362,15 @@ impl Cube {
         ]
     }
 
+    /// Returns a [`Column`] using the cube's underlying element structure.
+    ///
+    /// # Examples
+    /// ```
+    /// # use rustytwisty::cube::cube::*;
+    /// let cube = Cube::new();
+    ///
+    /// let column = Cube::column_raw(&cube, 5);
+    /// ```
     pub const fn column_raw(&self, pos: usize) -> Column {
         match pos {
             0 => Column {
@@ -356,6 +422,15 @@ impl Cube {
         }
     }
 
+    /// Returns a [`Column`] using the [`ColumnPosition`] enum.
+    ///
+    /// # Examples
+    /// ```
+    /// # use rustytwisty::cube::cube::*;
+    /// let cube = Cube::new();
+    ///
+    /// let column = Cube::column(&cube, ColumnPosition::FrontLeft);
+    /// ```
     pub const fn column(&self, pos: ColumnPosition) -> Column {
         match pos {
             ColumnPosition::BackLeft => Cube::column_raw(&self, 0),
@@ -370,6 +445,15 @@ impl Cube {
         }
     }
 
+    /// Returns an array of [`Column`] objects for each column in the cube.
+    ///
+    /// # Examples
+    /// ```
+    /// # use rustytwisty::cube::cube::*;
+    /// let cube = Cube::new();
+    ///
+    /// let columns = Cube::columns(&cube);
+    /// ```
     pub const fn columns(&self) -> [Column; 9] {
         [
             Cube::column_raw(&self, 0),
@@ -384,6 +468,15 @@ impl Cube {
         ]
     }
 
+    /// Returns a [`Face`] using the [`FaceKind`] enum.
+    ///
+    /// # Examples
+    /// ```
+    /// # use rustytwisty::cube::cube::*;
+    /// let cube = Cube::new();
+    ///
+    /// let face = Cube::face(&cube, FaceKind::Right);
+    /// ```
     pub const fn face(&self, s: FaceKind) -> Face {
         match s {
             FaceKind::Top => {
