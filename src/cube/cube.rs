@@ -106,6 +106,21 @@ pub enum RowPosition {
     BottomFront,
 }
 
+/// A 3x3 Twisty Puzzle Cube
+///
+/// Models each individual "subcube" known as a cubie and provides methods to
+/// manage its data.
+///
+/// # Examples
+/// ```
+/// use rustytwisty::cube::{cube::*, cubie::*};
+///
+/// let cube = Cube::new();
+///
+/// let row = Cube::row(&cube, RowPosition::TopCenter);
+/// let column = Cube::column(&cube, ColumnPosition::MiddleRight);
+/// let corner = Cube::corner(&cube, CornerPosition::TopBackRight);
+/// ```
 pub struct Cube {
     pub elements: [Box<dyn Cubie>; 26],
 }
